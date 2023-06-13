@@ -1,0 +1,28 @@
+input {
+    file {
+        path => "/home/sevban/Desktop/corona1.csv" 
+        start_position => "beginning"
+        sincedb_path => "/dev/null"
+    }
+}
+
+filter {
+    csv {
+        separator => ","
+        skip_header => "true"
+        columns => ["countries", "total_cases", "new_cases", "total_deaths", "new_deaths", "total_recovered", "new_recovered", "active_cases", "total_cases_in_1m", "deaths_in_1m", "population", "country_code"]
+    }
+}
+filter {
+    mutate {
+        remove_field => ["event","original","path","host","log","file","path","message","@version"]
+    }
+}
+output {
+    elasticsearch {
+        hosts => "http://localhost:9200"
+        index => "corona.csv"
+    }
+    stdout {}
+}
+
